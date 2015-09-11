@@ -1,44 +1,58 @@
+#extension to enumerable to provide statistics
 module Enumerable
+  #sum of all elements
   def sum
     inject(0.0) { |result, el| result + el }
   end
-
+  #average of all elements
   def mean 
     sum / size
   end
   
+  #geometric average of all elements
   def geo_mean
     Math.sqrt(self.square_sum)
   end
   
+  #sum of all elements' square
   def square_sum
     self.inject(0.0){|accum, i| accum +i**2 }
   end
   
+  #variance of the elements
   def var
     m = self.mean
     sum = self.inject(0.0){|accum, i| accum +(i-m)**2 }
     sum/self.length
   end
   
+  #rms value of the elements
   def rms
     Math.sqrt(self.square_sum/self.length)
   end
 
+  #standard deviation of the elements
   def stdev
     return Math.sqrt(self.var)
   end
   
+  #returns an array of a specific column of a tuple or structures
   def col(cname)
     map {|x| x[cname]}
   end
 end
 
+#
+# Loads dataset from file
+# Provide access to movie data
+#
 class MovieData
   
   attr_reader :trainset,:testset
   
   #reads the dataset
+  #folder is the path to the data,dataset specify the train/test split
+  #to use, if nil whole dataset "u.data" will be used and test set is set to nil
   def load_data(folder,dataset=nil)
     train = dataset == nil ? "#{folder}/u.data" : "#{folder}/#{dataset.to_s}.base" 
     test = dataset == nil ? "" : "#{folder}/#{dataset.to_s}.test"
@@ -62,23 +76,25 @@ class MovieData
     end
   end
   
-  
+  #gets the total reviewed times of a movie 
   def popularity(movie_id)
     @movie_index[movie_id].size
   end
   
+  #gets the movie list sorted by the number of reviews
   def popularity_list
-  #build list by sorting by the number of reviews and caches it
     @popularity_list=@movie_index.sort_by { |x| -x[1].size }.col(0) if @popularity_list.nil?
     @popularity_list
   end
     
+  #retursn a specific user's rating on a movie in the train set
   def rating(user_id,movie_id)
     @rating_index[[user_id,movie_id]]
     #item=@user_index[user_id].index { |item| item.m_id == movie_id }
     #item.nil? ? 0.0 : item.rating
   end
   
+  #returns a specific user's average rating on all movies he viewed in the train set
   def avg_rating(user_id)
     @user_index[user_id].col(:rating).mean
   end
@@ -88,7 +104,8 @@ class MovieData
     if u_id.nil? then
       @movie_index.keys
     else
-      @user_index[u_id].col(:m_id)
+      data=@user_index[u_id]
+      data.nil? ? [] : data.col(:m_id)
     end
   end
   
@@ -97,7 +114,8 @@ class MovieData
     if m_id.nil? then
       @user_index.keys
     else
-      @movie_index[m_id].col(:u_id)
+      data=@movie_index[m_id]
+      data.nil? ? [] : data.col(:u_id)
     end
   end
 
@@ -135,7 +153,6 @@ module Similarity
 end
 
 #module of aggregation methods, takes a list of (rating,similarity) of similar users
-
 module Aggregation
   #predict by all similar user's average ratings
   def self.average(data,u_id,ratings)
@@ -145,25 +162,35 @@ module Aggregation
   def self.weight_average(data,u_id,ratings)
     ratings.map {|item| item[0]*item[1]}.sum / ratings.col(1).map{|x| x.abs}.sum
   end
+  #predict by user's average rating and all similar user's ratings weighted by similarity
   def self.mean_average(data,u_id,ratings)
     mean=data.avg_rating(u_id)
     mean + ratings.map {|item| (item[0]-mean)*item[1]}.sum / ratings.col(1).map{|x| x.abs}.sum
   end
 end
 
+#calculates similarity between users and predicts rating for a movie the user haven't seen
 
 class Predicter
   attr_reader :data
   
-  def initialize(data,similarity,aggragation)
+  #requires dataset, similarity measurements and aggregation methods
+  def initialize(data,similarity,aggregation)
     @data=data
     @similarity_func=similarity
-    @aggragation_func=aggragation
+    @aggregation_func=aggregation
+    @similarity_cache={}
   end
   
-  
+  #returns similarity between two users
   def similarity(user1,user2)
-    @similarity_func.call(data,user1,user2)
+    user1,user2=user2,user1 if user1 > user2
+    result=@similarity_cache[[user1,user2]]
+    if result.nil?
+      result=@similarity_func.call(data,user1,user2)
+      @similarity_cache[[user1,user2]]=result
+    end
+    result
   end
   
   #return a list of tuples with (userid,similarity)
@@ -174,22 +201,27 @@ class Predicter
     count.nil? ? result : result.take(count)
   end
  
-  #predict one movie rating
+  #predict one movie rating of a user by selected measurements
   def predict(u_id,m_id)
+    #puts "u:#{u_id},m#{m_id}"
     sim=most_similar(u_id,m_id).map { |item| [data.rating(item[0],m_id),item[1]] }
-    @aggragation_func.call(data,u_id,sim)
+    result=@aggregation_func.call(data,u_id,sim)
+    result.finite? ? result : data.avg_rating(u_id)
   end
     
-  #predict the top k items in the test set
-  def run_test(k)
-    MovieTest.new(@data.testset.take(k).map {|item| [item.u_id,item.m_id,item.rating,predict(item.u_id,item.m_id)]})
+  #predict the top k items in the test set and return a MovieTest structure
+  def run_test(k=nil)
+    dataset=k.nil? ? @data.testset : @data.testset.take(k)
+    MovieTest.new(dataset.map {|item| [item.u_id,item.m_id,item.rating,predict(item.u_id,item.m_id)]})
   end
   
 end
 
+#provides predict result metrics
 class MovieTest
   attr_reader :mean,:stdev,:rms
   
+  #data should be a list of tuple of user id,movie id,true rating,predicted rating
   def initialize(data)
     @data=data
     error=@data.map {|item| (item[2]-item[3]).abs}
@@ -198,12 +230,26 @@ class MovieTest
     @rms=error.rms
   end
   
+  #gets the original array of results
   def to_a
     @data
   end
 end
 
-data = MovieData.new
-data.load_data('ml-100k',:u1) 
-p = Predicter.new(data,Similarity.method("pearson"),Aggregation.method("mean_average"))
-puts p.run_test(50).inspect
+#calculates the time between the execution, a block is required
+def time
+  tstart = Time.now.to_f
+  yield
+  tend = Time.now.to_f
+  tend - tstart
+end
+
+ #run a test using specific settings
+def test(similarity="pearson",aggregation="weight_average",k=nil)
+  data = MovieData.new
+  data.load_data('ml-100k',:u1) 
+  puts (time do
+  p = Predicter.new(data,Similarity.method(similarity),Aggregation.method(aggregation))
+  puts p.run_test(k).inspect
+  end)
+end

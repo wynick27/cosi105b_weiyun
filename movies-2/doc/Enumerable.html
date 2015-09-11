@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module Enumerable - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-col">#col</a>
+    
+    <li ><a href="#method-i-geo_mean">#geo_mean</a>
+    
+    <li ><a href="#method-i-mean">#mean</a>
+    
+    <li ><a href="#method-i-rms">#rms</a>
+    
+    <li ><a href="#method-i-square_sum">#square_sum</a>
+    
+    <li ><a href="#method-i-stdev">#stdev</a>
+    
+    <li ><a href="#method-i-sum">#sum</a>
+    
+    <li ><a href="#method-i-var">#var</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-Enumerable">
+  <h1 id="module-Enumerable" class="module">
+    module Enumerable
+  </h1>
+
+  <section class="description">
+    
+<p>extension to enumerable to provide statistics</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-col" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">col</span><span
+            class="method-args">(cname)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>returns an array of a specific column of a tuple or structures</p>
+          
+          
+
+          
+          <div class="method-source-code" id="col-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">col</span>(<span class="ruby-identifier">cname</span>)
+  <span class="ruby-identifier">map</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>[<span class="ruby-identifier">cname</span>]}
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-geo_mean" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">geo_mean</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>geometric average of all elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="geo_mean-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">geo_mean</span>
+  <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">square_sum</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-mean" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">mean</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>average of all elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="mean-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">mean</span> 
+  <span class="ruby-identifier">sum</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">size</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-rms" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">rms</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>rms value of the elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="rms-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">rms</span>
+  <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">square_sum</span><span class="ruby-operator">/</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">length</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-square_sum" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">square_sum</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>sum of all elements&#39; square</p>
+          
+          
+
+          
+          <div class="method-source-code" id="square_sum-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">square_sum</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-value">0.0</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">accum</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">accum</span> <span class="ruby-operator">+</span><span class="ruby-identifier">i</span><span class="ruby-operator">**</span><span class="ruby-value">2</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-stdev" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">stdev</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>standard deviation of the elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="stdev-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 35</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">stdev</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">var</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-sum" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">sum</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>sum of all elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="sum-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">sum</span>
+  <span class="ruby-identifier">inject</span>(<span class="ruby-value">0.0</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">result</span>, <span class="ruby-identifier">el</span><span class="ruby-operator">|</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">el</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-var" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">var</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>variance of the elements</p>
+          
+          
+
+          
+          <div class="method-source-code" id="var-source">
+            <pre><span class="ruby-comment"># File movie_data.rb, line 23</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">var</span>
+  <span class="ruby-identifier">m</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">mean</span>
+  <span class="ruby-identifier">sum</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-value">0.0</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">accum</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">accum</span> <span class="ruby-operator">+</span>(<span class="ruby-identifier">i</span><span class="ruby-operator">-</span><span class="ruby-identifier">m</span>)<span class="ruby-operator">**</span><span class="ruby-value">2</span> }
+  <span class="ruby-identifier">sum</span><span class="ruby-operator">/</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">length</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
